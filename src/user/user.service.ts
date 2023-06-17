@@ -1,4 +1,3 @@
-import { CreateUserDto } from './dto';
 import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { UserRepository } from './user.repository';
@@ -13,9 +12,5 @@ export class UserService {
 
   async getUser(user_id: string): Promise<User> {
     return await this.userRepository.getUser(user_id);
-  }
-
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
-    return await this.userRepository.createUser(createUserDto);
   }
 }
