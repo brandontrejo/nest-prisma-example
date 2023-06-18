@@ -2,9 +2,9 @@ import { Controller, Get, UseGuards } from '@nestjs/common';
 
 import { GetAuthUser } from 'src/auth/decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { User } from '@prisma/client';
 import { UserService } from './user.service';
 import { AuthUserDto } from 'src/auth/dto';
+import { UserResponse } from 'src/core/types';
 
 @Controller()
 export class UserController {
@@ -12,13 +12,13 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get('users')
-  getUsers(): Promise<User[]> {
+  getUsers(): Promise<UserResponse[]> {
     return this.userService.getUsers();
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('user')
-  getUser(@GetAuthUser() authUser: AuthUserDto): Promise<User> {
+  getUser(@GetAuthUser() authUser: AuthUserDto): Promise<UserResponse> {
     return this.userService.getUser(authUser.id);
   }
 }

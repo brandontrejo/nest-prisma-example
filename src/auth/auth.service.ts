@@ -1,3 +1,5 @@
+import * as bcrypt from 'bcrypt';
+
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { LoginRequestDto, LoginResponse, RegisterRequestDto } from './dto';
 
@@ -27,26 +29,33 @@ export class AuthService {
     return await this.authRepository.getUserById(decoded.id);
   }
 
-  // TODO: validated password
   public async login(LoginRequestDto: LoginRequestDto): Promise<LoginResponse> {
     const user = await this.authRepository.getUserByEmail(
       LoginRequestDto.email,
     );
 
-    if (!user) {
+    const isMatch = await bcrypt.compare(
+      LoginRequestDto.password,
+      user.password,
+    );
+
+    if (!user || !isMatch) {
       return {
-        status: HttpStatus.NOT_FOUND,
-        error: ['No user found with this email'],
+        status: HttpStatus.UNAUTHORIZED,
+        error: ['Unauthorized'],
         token: null,
       };
     }
 
     const token: string = this.generateToken(user.id);
 
-    return { token, status: HttpStatus.OK, error: null };
+    return {
+      token: token,
+      status: HttpStatus.OK,
+      error: null,
+    };
   }
 
-  // TODO: store bcrypt password
   public async register(registerRequestDto: RegisterRequestDto) {
     const user = await this.authRepository.createUser(registerRequestDto);
 

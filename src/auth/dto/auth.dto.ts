@@ -16,6 +16,7 @@ export interface LoginRequest {
 export interface RegisterRequest {
   email: string;
   name: string;
+  password: string;
 }
 
 export interface LoginResponse {
@@ -38,6 +39,10 @@ export class RegisterRequestDto implements RegisterRequest {
   @IsString()
   @IsNotEmpty()
   public readonly name: string;
+
+  @IsString()
+  @IsNotEmpty()
+  public readonly password: string;
 }
 
 export class LoginRequestDto implements LoginRequest {

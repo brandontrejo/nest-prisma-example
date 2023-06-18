@@ -1,3 +1,5 @@
+import * as bcrypt from 'bcrypt';
+
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/core/database/prisma.service';
 import { RegisterRequestDto } from './dto';
@@ -24,11 +26,14 @@ export class AuthRepository {
   }
 
   async createUser(registerRequestDto: RegisterRequestDto): Promise<User> {
+    const saltOrRounds = 10;
+    const hash = await bcrypt.hash(registerRequestDto.password, saltOrRounds);
+
     return await this.prismaService.user.create({
       data: {
         email: registerRequestDto.email,
         name: registerRequestDto.name,
-        password: '123456',
+        password: hash,
       },
     });
   }
